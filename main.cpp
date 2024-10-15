@@ -4,12 +4,16 @@
 #include<QProgressBar>
 #include<QSpinBox>
 #include<QHBoxLayout>
+#include<QTimer>
 
 //...
 class TestWidget:public QWidget
 {
 public:
     explicit TestWidget(QWidget*parent=nullptr);
+    void onTimerTimeout();
+private:
+    QProgressBar*progress_bar{};
 };
 
 //default constructor
@@ -19,21 +23,25 @@ TestWidget::TestWidget(QWidget*parent):QWidget{parent}
     QHBoxLayout*layout{new QHBoxLayout(this)};
     layout->setContentsMargins(QMargins(50,50,0,50));
 
-    //spin box
-    QSpinBox*spin_box{new QSpinBox()};
-    spin_box->setMaximum(100);
-    spin_box->setMinimum(0);
-    layout->addWidget(spin_box);
+    //QTimer
+    QTimer*timer{new QTimer};
+    timer->setInterval(1000);
 
     //progress bar
-    QProgressBar*progress_bar{new QProgressBar()};
+    progress_bar={new QProgressBar()};
     progress_bar->setMaximum(100);
     progress_bar->setMinimum(0);
     progress_bar->setMinimumWidth(256);
     layout->addWidget(progress_bar);
 
     //connecting spin box value change signal to progress bar setvalue function/slot
-    connect(spin_box,&QSpinBox::valueChanged,progress_bar,&QProgressBar::setValue);
+    connect(timer,&QTimer::timeout,this,&TestWidget::onTimerTimeout);
+    timer->start();
+};
+
+void TestWidget::onTimerTimeout()
+{
+    progress_bar->setValue(progress_bar->value()+2);
 };
 
 int main(int argc, char *argv[])
