@@ -13,7 +13,7 @@ public:
     explicit TestWidget(QWidget*parent=nullptr);
     void onTimerTimeout();
 private:
-    QProgressBar*progress_bar{};
+    QProgressBar*_progress_bar{};
 };
 
 //default constructor
@@ -28,11 +28,11 @@ TestWidget::TestWidget(QWidget*parent):QWidget{parent}
     timer->setInterval(1000);
 
     //progress bar
-    progress_bar={new QProgressBar()};
-    progress_bar->setMaximum(100);
-    progress_bar->setMinimum(0);
-    progress_bar->setMinimumWidth(256);
-    layout->addWidget(progress_bar);
+    _progress_bar={new QProgressBar()};
+    _progress_bar->setMaximum(100);
+    _progress_bar->setMinimum(0);
+    _progress_bar->setMinimumWidth(256);
+    layout->addWidget(_progress_bar);
 
     //connecting spin box value change signal to progress bar setvalue function/slot
     connect(timer,&QTimer::timeout,this,&TestWidget::onTimerTimeout);
@@ -41,7 +41,8 @@ TestWidget::TestWidget(QWidget*parent):QWidget{parent}
 
 void TestWidget::onTimerTimeout()
 {
-    progress_bar->setValue(progress_bar->value()+2);
+    _progress_bar->setValue(_progress_bar->value()+2);
+    if(_progress_bar->value()>=99)QApplication::quit();
 };
 
 int main(int argc, char *argv[])
